@@ -211,8 +211,18 @@ public class VentanaPaint extends javax.swing.JFrame {
 
         jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/circulo.png"))); // NOI18N
         jToggleButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jToggleButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jToggleButton1MousePressed(evt);
+            }
+        });
 
         jToggleButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cuadrado.png"))); // NOI18N
+        jToggleButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jToggleButton2MousePressed(evt);
+            }
+        });
 
         jToggleButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/linea.png"))); // NOI18N
 
@@ -317,6 +327,19 @@ public class VentanaPaint extends javax.swing.JFrame {
         colorSeleccionado = jColorChooser1.getColor();
         jLabel1.setBackground(colorSeleccionado);
     }//GEN-LAST:event_jButton2MousePressed
+
+    private void jToggleButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton1MousePressed
+        //Selecciona los círculos a través del valor numérico de formaSeleccionada.
+        formaSeleccionada=0;
+        jToggleButton2.setSelected(false);
+        jToggleButton3.setSelected(false);
+    }//GEN-LAST:event_jToggleButton1MousePressed
+
+    private void jToggleButton2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton2MousePressed
+        formaSeleccionada=1;
+        jToggleButton1.setSelected(false);
+        jToggleButton3.setSelected(false);
+    }//GEN-LAST:event_jToggleButton2MousePressed
 
     /**
      * @param args the command line arguments
