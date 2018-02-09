@@ -32,10 +32,19 @@ public class VentanaPaint extends javax.swing.JFrame {
     BufferedImage buffer, buffer2= null;
     //Esta clase nos va a permitir crear un círculo. Forma parte de una librería de Java. Queremos qu e cuando hagamos click
     //se crée esa elipse.
-    Circulo auxiliar;
+    Circulo circulo;
+    Cuadrado cuadrado;
     /*Vamos a declarar un segundo buffer donde vamos a guardar la información que ya hemos dibujado sobre la pantalla. Es decir,
     un buffer coge los puntos intermedios que son pincho, suelto, arrastro, y el segundo buffer guarda la versión final. Los buffer
     son memoria y el jPanel es pantalla.*/
+    
+    /*En esta variable vamos a guardar el color seleccionado.*/
+    Color colorSeleccionado= Color.black;
+    
+    /*Si vale cero, pinto círculos. Si vale 1 pinto cuadrados. Si vale 2 pinto lineas.
+    Esta variable de instancia nos va a servir para determinar si estamos pintando una cosa o la otra.*/
+    
+   int formaSeleccionada=0;
     
     
     public VentanaPaint() {
@@ -115,11 +124,24 @@ public class VentanaPaint extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jButton3 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jToggleButton2 = new javax.swing.JToggleButton();
+        jToggleButton3 = new javax.swing.JToggleButton();
 
         jButton1.setText("cancelar");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton1MousePressed(evt);
+            }
+        });
 
         jButton2.setText("guardar");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton2MousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -169,7 +191,7 @@ public class VentanaPaint extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 736, Short.MAX_VALUE)
+            .addGap(0, 867, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,24 +200,38 @@ public class VentanaPaint extends javax.swing.JFrame {
 
         jCheckBox1.setText("Relleno");
 
-        jButton3.setText("color");
-        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Color");
+        jLabel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jButton3MousePressed(evt);
+                jLabel1MousePressed(evt);
             }
         });
+
+        jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/circulo.png"))); // NOI18N
+        jToggleButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        jToggleButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cuadrado.png"))); // NOI18N
+
+        jToggleButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/linea.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(39, 39, 39)
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jToggleButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jToggleButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,7 +241,13 @@ public class VentanaPaint extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBox1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jToggleButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jToggleButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
         );
@@ -221,7 +263,12 @@ public class VentanaPaint extends javax.swing.JFrame {
         //repinto el fondo. La primera vez es blanco, la segunda vez será lo que haya pintado.
         g2.drawImage(buffer2, 0,0, null);
         
-       auxiliar.dibujate(g2, evt.getX());
+      //Dibujo la forma correspondiente.
+        switch(formaSeleccionada){
+            case 0: circulo.dibujate(g2, evt.getX()); break;
+            case 1: cuadrado.dibujate(g2, evt.getX()); break;
+        }
+
         
         //Dibujar requiere muchos recursos del ordenador. Se tiene que hacer lo mínimo imprescindible posible. Le estamos
         //diciendo a Java que hemos cambiado el tamaño del círculo y que tiene que actualizarlo en pantalla. El método repaint
@@ -230,12 +277,19 @@ public class VentanaPaint extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanel1MouseDragged
 
     private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
+        //inicializo la forma que usaré para dibujar en el buffer.
+        
+        switch(formaSeleccionada){
+            case 0: circulo= new Circulo(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected()); break;
+            case 1: cuadrado= new Cuadrado(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected()); break;
+        }
+
         // Este evento nos permite inicializar la elipse que vamos a dibujar en el buffer. Tiene que estar en la posición x,y donde
         //hagamos el click.
         //evt.getX nos dice en dónde se ha producido el click, y el getY en la coordenada Y donde ha ocurrido el evento. Le preguntamos
         //al evento co evt. 1,1 son los píxeles con los que se va a crear la elipse, el width y el height.
         //El botón checkbox que hemos metido sirve para poner el relleno.
-        auxiliar= new Circulo(evt.getX(), evt.getY(), 1, Color.blue, jCheckBox1.isSelected());
+        //auxiliar= new Circulo(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected());
         
     }//GEN-LAST:event_jPanel1MousePressed
 
@@ -244,12 +298,25 @@ public class VentanaPaint extends javax.swing.JFrame {
         /*El buffer coge el desarrollo de lo que estamos pintando y el buffer2 guarda el resultado final.*/
         Graphics2D g2 = (Graphics2D) buffer2.getGraphics();
         //Estas lineas son las que hacen el dibujado.
-        auxiliar.dibujate(g2, evt.getX());
+         switch(formaSeleccionada){
+            case 0: circulo.dibujate(g2, evt.getX()); break;
+            case 1: cuadrado.dibujate(g2, evt.getX()); break;
+        }
     }//GEN-LAST:event_jPanel1MouseReleased
 
-    private void jButton3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MousePressed
+    private void jLabel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MousePressed
         jDialog1.setVisible(true);
-    }//GEN-LAST:event_jButton3MousePressed
+    }//GEN-LAST:event_jLabel1MousePressed
+
+    private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
+        jDialog1.setVisible(false);
+    }//GEN-LAST:event_jButton1MousePressed
+
+    private void jButton2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MousePressed
+        jDialog1.setVisible(false);
+        colorSeleccionado = jColorChooser1.getColor();
+        jLabel1.setBackground(colorSeleccionado);
+    }//GEN-LAST:event_jButton2MousePressed
 
     /**
      * @param args the command line arguments
@@ -289,10 +356,13 @@ public class VentanaPaint extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JDialog jDialog1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JToggleButton jToggleButton2;
+    private javax.swing.JToggleButton jToggleButton3;
     // End of variables declaration//GEN-END:variables
 }
