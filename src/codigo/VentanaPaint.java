@@ -35,6 +35,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     Circulo circulo;
     Cuadrado cuadrado;
     Triangulo triangulo;
+    Pentagono pentagono;
     /*Vamos a declarar un segundo buffer donde vamos a guardar la información que ya hemos dibujado sobre la pantalla. Es decir,
     un buffer coge los puntos intermedios que son pincho, suelto, arrastro, y el segundo buffer guarda la versión final. Los buffer
     son memoria y el jPanel es pantalla.*/
@@ -138,6 +139,7 @@ public class VentanaPaint extends javax.swing.JFrame {
         jToggleButton2 = new javax.swing.JToggleButton();
         jToggleButton3 = new javax.swing.JToggleButton();
         jToggleButton4 = new javax.swing.JToggleButton();
+        jToggleButton5 = new javax.swing.JToggleButton();
 
         jButton1.setText("cancelar");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -244,6 +246,14 @@ public class VentanaPaint extends javax.swing.JFrame {
             }
         });
 
+        jToggleButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/circulo.png"))); // NOI18N
+        jToggleButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jToggleButton5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jToggleButton5MousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -257,7 +267,8 @@ public class VentanaPaint extends javax.swing.JFrame {
                         .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jToggleButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jToggleButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jToggleButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -278,7 +289,9 @@ public class VentanaPaint extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jToggleButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jToggleButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
         );
@@ -299,6 +312,7 @@ public class VentanaPaint extends javax.swing.JFrame {
             case 0: circulo.dibujate(bufferGraphics, evt.getX()); break;
             case 1: cuadrado.dibujate(bufferGraphics, evt.getX()); break;
             case 2: triangulo.dibujate(bufferGraphics, evt.getY()); break;
+            case 3: pentagono.dibujate(bufferGraphics, evt.getY()); break;
         }
 
         
@@ -315,6 +329,7 @@ public class VentanaPaint extends javax.swing.JFrame {
             case 0: circulo= new Circulo(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected()); break;
             case 1: cuadrado= new Cuadrado(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected()); break;
             case 2: triangulo= new Triangulo(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected()); break;
+            case 3: pentagono= new Pentagono(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected()); break;
         }
 
         // Este evento nos permite inicializar la elipse que vamos a dibujar en el buffer. Tiene que estar en la posición x,y donde
@@ -335,6 +350,7 @@ public class VentanaPaint extends javax.swing.JFrame {
             case 0: circulo.dibujate(buffer2Graphics, evt.getX()); break;
             case 1: cuadrado.dibujate(buffer2Graphics, evt.getX()); break;
             case 2: triangulo.dibujate(buffer2Graphics, evt.getY()); break;
+            case 3: pentagono.dibujate(buffer2Graphics, evt.getY()); break;
         }
     }//GEN-LAST:event_jPanel1MouseReleased
 
@@ -371,6 +387,10 @@ public class VentanaPaint extends javax.swing.JFrame {
         jToggleButton1.setSelected(false);
         
     }//GEN-LAST:event_jToggleButton4MousePressed
+
+    private void jToggleButton5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton5MousePressed
+        formaSeleccionada=3;
+    }//GEN-LAST:event_jToggleButton5MousePressed
 
     /**
      * @param args the command line arguments
@@ -419,5 +439,6 @@ public class VentanaPaint extends javax.swing.JFrame {
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JToggleButton jToggleButton4;
+    private javax.swing.JToggleButton jToggleButton5;
     // End of variables declaration//GEN-END:variables
 }
