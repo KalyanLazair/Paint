@@ -18,10 +18,12 @@ package codigo;
 
 import java.awt.Color;
 import static java.awt.Color.RED;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import javax.swing.JToggleButton;
 
 /**
  *
@@ -32,10 +34,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     BufferedImage buffer, buffer2= null;
     //Esta clase nos va a permitir crear un círculo. Forma parte de una librería de Java. Queremos qu e cuando hagamos click
     //se crée esa elipse.
-    Circulo circulo;
-    Cuadrado cuadrado;
-    Triangulo triangulo;
-    Pentagono pentagono;
+    Forma miForma;
     /*Vamos a declarar un segundo buffer donde vamos a guardar la información que ya hemos dibujado sobre la pantalla. Es decir,
     un buffer coge los puntos intermedios que son pincho, suelto, arrastro, y el segundo buffer guarda la versión final. Los buffer
     son memoria y el jPanel es pantalla.*/
@@ -43,10 +42,12 @@ public class VentanaPaint extends javax.swing.JFrame {
     /*En esta variable vamos a guardar el color seleccionado.*/
     Color colorSeleccionado= Color.black;
     
-    /*Si vale cero, pinto círculos. Si vale 1 pinto cuadrados. Si vale 2 pinto lineas.
-    Esta variable de instancia nos va a servir para determinar si estamos pintando una cosa o la otra.*/
+
     
-   int formaSeleccionada=0;
+   int formaSeleccionada=3; //Si vale 100, pinto círculos.
+                            //Si vale 4 pinto cuadrados.
+                            //Si vale 5 pinto pentágonos.
+                            //Si vale 3 pinto triángulos.
    
    /*Vamos a declarar en instancia la función Graphics, vamos a llamar a cada una acorde al lugar al que afectan.
    bufferGraphics para el primer buffer, buffer2Graphics para el segundo buffer y jPanelGraphics para el jPanel.*/
@@ -89,6 +90,15 @@ public class VentanaPaint extends javax.swing.JFrame {
         //Inicializamos el jPanel.
          jPanelGraphics=(Graphics2D) jPanel1.getGraphics();
         
+    }
+    
+     private void deSelecciona(){
+        Component[] components = (Component[]) getContentPane().getComponents();
+        for (Component comp : components) {
+            if (comp instanceof JToggleButton) {
+                ((JToggleButton)comp).setSelected(false);
+            }
+        } 
     }
     
     /*Tenemos que hacer un método @Override, que significa sobreescribir. Cuando hemos creado clases hemos extendido
@@ -307,13 +317,7 @@ public class VentanaPaint extends javax.swing.JFrame {
         //repinto el fondo. La primera vez es blanco, la segunda vez será lo que haya pintado.
         bufferGraphics.drawImage(buffer2, 0,0, null);
         
-      //Dibujo la forma correspondiente.
-        switch(formaSeleccionada){
-            case 0: circulo.dibujate(bufferGraphics, evt.getX()); break;
-            case 1: cuadrado.dibujate(bufferGraphics, evt.getX()); break;
-            case 2: triangulo.dibujate(bufferGraphics, evt.getY()); break;
-            case 3: pentagono.dibujate(bufferGraphics, evt.getY()); break;
-        }
+        miForma.dibujate(bufferGraphics, evt.getY(), evt.getX());
 
         
         //Dibujar requiere muchos recursos del ordenador. Se tiene que hacer lo mínimo imprescindible posible. Le estamos
@@ -326,10 +330,10 @@ public class VentanaPaint extends javax.swing.JFrame {
         //inicializo la forma que usaré para dibujar en el buffer.
         
         switch(formaSeleccionada){
-            case 0: circulo= new Circulo(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected()); break;
-            case 1: cuadrado= new Cuadrado(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected()); break;
-            case 2: triangulo= new Triangulo(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected()); break;
-            case 3: pentagono= new Pentagono(evt.getX(), evt.getY(), 1, colorSeleccionado, jCheckBox1.isSelected()); break;
+            case 100: miForma= new Circulo(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
+            case 4: miForma= new Cuadrado(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
+            case 3: miForma= new Triangulo(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
+            case 5: miForma= new Pentagono(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
         }
 
         // Este evento nos permite inicializar la elipse que vamos a dibujar en el buffer. Tiene que estar en la posición x,y donde
@@ -346,12 +350,7 @@ public class VentanaPaint extends javax.swing.JFrame {
         /*El buffer coge el desarrollo de lo que estamos pintando y el buffer2 guarda el resultado final.*/
         //Graphics2D g2 = (Graphics2D) buffer2.getGraphics();
         //Estas lineas son las que hacen el dibujado.
-         switch(formaSeleccionada){
-            case 0: circulo.dibujate(buffer2Graphics, evt.getX()); break;
-            case 1: cuadrado.dibujate(buffer2Graphics, evt.getX()); break;
-            case 2: triangulo.dibujate(buffer2Graphics, evt.getY()); break;
-            case 3: pentagono.dibujate(buffer2Graphics, evt.getY()); break;
-        }
+         miForma.dibujate(buffer2Graphics, evt.getY(), evt.getX());
     }//GEN-LAST:event_jPanel1MouseReleased
 
     private void jLabel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MousePressed
@@ -370,26 +369,27 @@ public class VentanaPaint extends javax.swing.JFrame {
 
     private void jToggleButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton1MousePressed
         //Selecciona los círculos a través del valor numérico de formaSeleccionada.
-        formaSeleccionada=0;
-        jToggleButton2.setSelected(false);
-        jToggleButton3.setSelected(false);
+        formaSeleccionada=100;
+        deSelecciona();
     }//GEN-LAST:event_jToggleButton1MousePressed
 
     private void jToggleButton2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton2MousePressed
-        formaSeleccionada=1;
-        jToggleButton1.setSelected(false);
-        jToggleButton3.setSelected(false);
+        //cuadrados.
+        formaSeleccionada=4;
+        deSelecciona();
     }//GEN-LAST:event_jToggleButton2MousePressed
 
     private void jToggleButton4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton4MousePressed
-        formaSeleccionada=2;
-        jToggleButton2.setSelected(false);
-        jToggleButton1.setSelected(false);
+        //Triangulo
+        formaSeleccionada=3;
+        deSelecciona();
         
     }//GEN-LAST:event_jToggleButton4MousePressed
 
     private void jToggleButton5MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton5MousePressed
-        formaSeleccionada=3;
+        //Pentagono
+        formaSeleccionada=5;
+        deSelecciona();
     }//GEN-LAST:event_jToggleButton5MousePressed
 
     /**
