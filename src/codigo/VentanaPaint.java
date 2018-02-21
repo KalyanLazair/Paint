@@ -23,7 +23,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+import javax.swing.JMenu;
 import javax.swing.JToggleButton;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -44,7 +50,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     
 
     
-   int formaSeleccionada=3; //Si vale 100, pinto círculos.
+   int formaSeleccionada=0; //Si vale 100, pinto círculos.
                             //Si vale 4 pinto cuadrados.
                             //Si vale 5 pinto pentágonos.
                             //Si vale 3 pinto triángulos.
@@ -60,6 +66,9 @@ public class VentanaPaint extends javax.swing.JFrame {
         inicializaBuffers();
         //Vamos a poner un tamaño a la ventana de colores.
         jDialog1.setSize(640,450);
+        //Esta función hace que, en el menú de cargar/guardar, podamos seleccionar sólo los archivos con esta extensión.
+        FileNameExtensionFilter filtro= new FileNameExtensionFilter("JPG y PNG sólo", "jpg", "png");
+        jFileChooser1.setFileFilter(filtro);
     }
     
     
@@ -142,6 +151,8 @@ public class VentanaPaint extends javax.swing.JFrame {
         jColorChooser1 = new javax.swing.JColorChooser();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jDialog2 = new javax.swing.JDialog();
+        jFileChooser1 = new javax.swing.JFileChooser();
         jPanel1 = new javax.swing.JPanel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
@@ -150,6 +161,11 @@ public class VentanaPaint extends javax.swing.JFrame {
         jToggleButton3 = new javax.swing.JToggleButton();
         jToggleButton4 = new javax.swing.JToggleButton();
         jToggleButton5 = new javax.swing.JToggleButton();
+        jToggleButton6 = new javax.swing.JToggleButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
 
         jButton1.setText("cancelar");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -190,6 +206,23 @@ public class VentanaPaint extends javax.swing.JFrame {
                     .addComponent(jButton1)
                     .addComponent(jButton2))
                 .addContainerGap(47, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jDialog2Layout = new javax.swing.GroupLayout(jDialog2.getContentPane());
+        jDialog2.getContentPane().setLayout(jDialog2Layout);
+        jDialog2Layout.setHorizontalGroup(
+            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jFileChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 805, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jDialog2Layout.setVerticalGroup(
+            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jFileChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -264,6 +297,42 @@ public class VentanaPaint extends javax.swing.JFrame {
             }
         });
 
+        jToggleButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/circulo.png"))); // NOI18N
+        jToggleButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jToggleButton6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jToggleButton6MousePressed(evt);
+            }
+        });
+
+        jMenu1.setText("File");
+        jMenu1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jMenu1StateChanged(evt);
+            }
+        });
+
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
+        jMenuItem1.setText("Guardar");
+        jMenuItem1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem1MousePressed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("Cargar");
+        jMenuItem2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem2MousePressed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -278,7 +347,8 @@ public class VentanaPaint extends javax.swing.JFrame {
                         .addComponent(jToggleButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jToggleButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jToggleButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jToggleButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jToggleButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -286,7 +356,7 @@ public class VentanaPaint extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(71, Short.MAX_VALUE)
+                .addContainerGap(50, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBox1)
@@ -301,7 +371,9 @@ public class VentanaPaint extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jToggleButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jToggleButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jToggleButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jToggleButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19))
         );
@@ -334,6 +406,7 @@ public class VentanaPaint extends javax.swing.JFrame {
             case 4: miForma= new Cuadrado(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
             case 3: miForma= new Triangulo(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
             case 5: miForma= new Pentagono(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
+            case 24: miForma= new Estrella(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
         }
 
         // Este evento nos permite inicializar la elipse que vamos a dibujar en el buffer. Tiene que estar en la posición x,y donde
@@ -392,6 +465,74 @@ public class VentanaPaint extends javax.swing.JFrame {
         deSelecciona();
     }//GEN-LAST:event_jToggleButton5MousePressed
 
+    private void jToggleButton6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton6MousePressed
+        formaSeleccionada=24;
+        deSelecciona();
+    }//GEN-LAST:event_jToggleButton6MousePressed
+
+    private void jMenuItem1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem1MousePressed
+
+        //Neceitamos saber si el usuario ha presionado cancelar o guardar.
+        int seleccion= jFileChooser1.showSaveDialog(this);
+        
+        if(seleccion==JFileChooser.APPROVE_OPTION){
+          //Si llego aquí es que el usuario ha pulsado en guardar cuando ha salido el menú de jFileChooser.
+          //Tenemos la opción de guardar la imagen del buffer sobre un fichero.
+          File fichero= jFileChooser1.getSelectedFile();
+          String nombre= fichero.getName();
+          //Necesitamos saber si es un png o un jpg. La extensión, para poder guardarlo y que no de error.
+          String extension=nombre.substring(nombre.lastIndexOf('.')+1);
+          if(extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("png")){
+            try{
+              ImageIO.write(buffer, extension, fichero);
+            }
+            catch(IOException e){
+                
+            }
+            }
+            
+                 
+          }
+        
+        
+    }//GEN-LAST:event_jMenuItem1MousePressed
+
+    private void jMenu1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jMenu1StateChanged
+        //Esto resuelve un bug en el que, al desplegar el menu, se quedaba un rectángulo gris en el buffer.
+        //Le decimos al buffer que, cuando se cierre el menú, se tiene que redibujar.
+        JMenu menu = (JMenu) evt.getSource();
+        if(!menu.isSelected()){
+          repaint();
+        }
+    }//GEN-LAST:event_jMenu1StateChanged
+
+    private void jMenuItem2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem2MousePressed
+        //Guardar.
+        int seleccion= jFileChooser1.showOpenDialog(this);
+        
+        if(seleccion==JFileChooser.APPROVE_OPTION){
+          //Si llego aquí es que el usuario ha pulsado en guardar cuando ha salido el menú de jFileChooser.
+          //Tenemos la opción de guardar la imagen del buffer sobre un fichero.
+          File fichero= jFileChooser1.getSelectedFile();
+          String nombre= fichero.getName();
+          //Necesitamos saber si es un png o un jpg. La extensión, para poder guardarlo y que no de error.
+          String extension=nombre.substring(nombre.lastIndexOf('.')+1);
+          BufferedImage imagen=null;
+          if(extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("png")){
+            try{
+              buffer=ImageIO.read(fichero);
+              bufferGraphics.drawImage(imagen,0,0, null);
+              buffer2Graphics.drawImage(imagen,0,0,null);
+              repaint();
+            }
+            catch(IOException e){
+            }
+            }
+            
+                 
+          }
+    }//GEN-LAST:event_jMenuItem2MousePressed
+
     /**
      * @param args the command line arguments
      */
@@ -433,12 +574,19 @@ public class VentanaPaint extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JDialog jDialog1;
+    private javax.swing.JDialog jDialog2;
+    private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton2;
     private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JToggleButton jToggleButton4;
     private javax.swing.JToggleButton jToggleButton5;
+    private javax.swing.JToggleButton jToggleButton6;
     // End of variables declaration//GEN-END:variables
 }

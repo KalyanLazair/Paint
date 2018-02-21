@@ -50,7 +50,8 @@ public class Forma extends Polygon{
     
     }
         //Recalcula la posición de los vértices en un polígono regular.
-        private void calculaVertices(int _radio, double _giro){
+        //Lo ponemos PUBLIC para poder hacer un override en la clase Estrella. De otra manera no se podría.
+        public void calculaVertices(int _radio, double _giro){
             
             //Calcula los puntos.
         for(int i=0; i<npoints; i++){
