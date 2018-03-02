@@ -16,12 +16,14 @@ el usuario suelta el ratón, se dibuja la imagen final sobre el jPanel.
  */
 package codigo;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import static java.awt.Color.RED;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +46,20 @@ public class VentanaPaint extends javax.swing.JFrame {
     /*Vamos a declarar un segundo buffer donde vamos a guardar la información que ya hemos dibujado sobre la pantalla. Es decir,
     un buffer coge los puntos intermedios que son pincho, suelto, arrastro, y el segundo buffer guarda la versión final. Los buffer
     son memoria y el jPanel es pantalla.*/
+ 
+    //Voy a declarar unas variables para que me ayuden en el comienzo de la linea y el pincel.
+    
+    double x=0;
+    double y=0;
+    
+    //Declaro la linea.
+    
+    Line2D.Double linea=new Line2D.Double();
+    
+    //Declaro el pincel
+    
+    Ellipse2D.Double pincel=new Ellipse2D.Double();
+    
     
     /*En esta variable vamos a guardar el color seleccionado.*/
     Color colorSeleccionado= Color.black;
@@ -53,13 +69,20 @@ public class VentanaPaint extends javax.swing.JFrame {
                             //Si vale 5 pinto pentágonos.
                             //Si vale 3 pinto triángulos.
    
-   Graphics2D g2;
-  
+   
    
    /*Vamos a declarar en instancia la función Graphics, vamos a llamar a cada una acorde al lugar al que afectan.
    bufferGraphics para el primer buffer, buffer2Graphics para el segundo buffer y jPanelGraphics para el jPanel.*/
    Graphics2D bufferGraphics, buffer2Graphics, jPanelGraphics=null;
     
+   //Stroke del slider.
+   BasicStroke trazo1=new BasicStroke(15);
+   BasicStroke trazo2= new BasicStroke(15,
+                                   BasicStroke.CAP_BUTT,
+                                   BasicStroke.JOIN_MITER, 
+                                   10.0f, 
+                                   new float[]{10.0f}, 
+                                   0.0f);
     
     public VentanaPaint() {
         initComponents();
@@ -175,6 +198,8 @@ public class VentanaPaint extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jSlider1 = new javax.swing.JSlider();
+        jCheckBox2 = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -388,6 +413,11 @@ public class VentanaPaint extends javax.swing.JFrame {
             }
         });
 
+        jSlider1.setMinimum(1);
+        jSlider1.setValue(1);
+
+        jCheckBox2.setText("- - - - - -");
+
         jMenu1.setText("File");
         jMenu1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -472,6 +502,12 @@ public class VentanaPaint extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(22, 22, 22))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jCheckBox2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -515,7 +551,11 @@ public class VentanaPaint extends javax.swing.JFrame {
                         .addGap(13, 13, 13)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBox2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -524,12 +564,43 @@ public class VentanaPaint extends javax.swing.JFrame {
     private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
         //El dibujado ocurre en el método dragged.
         //Apuntamos al buffer. Pintamos sobre blanco y rellenamos.
+       
         
         //Graphics2D g2=(Graphics2D) buffer.getGraphics();
         //repinto el fondo. La primera vez es blanco, la segunda vez será lo que haya pintado.
         bufferGraphics.drawImage(buffer2, 0,0, null);
         
-        miForma.dibujate(bufferGraphics, evt.getY(), evt.getX());
+        if(formaSeleccionada == 100 || formaSeleccionada== 3 || formaSeleccionada == 4 || formaSeleccionada == 5 || formaSeleccionada == 24){
+         if(jCheckBox2.isSelected()){
+           miForma.dibujate(bufferGraphics, evt.getY(), evt.getX(),new Trazo(jSlider1.getValue(), true));
+        }else{
+           miForma.dibujate(bufferGraphics, evt.getY(), evt.getX(),new Trazo(jSlider1.getValue()));
+        }
+        }
+        
+        //Dibujamos la linea.
+        if (formaSeleccionada == 2) {
+            linea.x2 = evt.getX();
+            linea.y2 = evt.getY();
+            new Trazo(jSlider1.getValue());            
+            bufferGraphics.setColor(colorSeleccionado);
+            bufferGraphics.draw(linea);
+        }
+        //Pincel.
+        if(formaSeleccionada==11){ 
+           pincel.x=evt.getX();
+           pincel.y=evt.getY();
+           pincel.width=10;
+           pincel.height=10;
+           bufferGraphics.fill(pincel);
+           bufferGraphics.setColor(colorSeleccionado);
+           bufferGraphics.draw(pincel);    
+        }
+        
+        
+     
+ //      miPincel.dibujaPincel(bufferGraphics, evt.getX(),evt.getY());
+        
 
        
         //Dibujar requiere muchos recursos del ordenador. Se tiene que hacer lo mínimo imprescindible posible. Le estamos
@@ -541,15 +612,28 @@ public class VentanaPaint extends javax.swing.JFrame {
     private void jPanel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MousePressed
         //inicializo la forma que usaré para dibujar en el buffer.
         
+        
         switch(formaSeleccionada){
             case 100: miForma= new Circulo(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
             case 4: miForma= new Cuadrado(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
             case 3: miForma= new Triangulo(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
             case 5: miForma= new Pentagono(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
             case 24: miForma= new Estrella(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
-            case 2: miForma= new Linea(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
-            case 10: miForma= new Circulo(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
-            //case 11: pincel= new Circulo(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
+            case 2:   
+                   {linea.x1=evt.getX();
+                     linea.y1=evt.getY();
+                     linea.x2=evt.getX();
+                     linea.y2=evt.getY();}
+               break;
+            case 10: buffer2Graphics.setColor(colorSeleccionado); break;
+            case 11: {pincel.x=evt.getX();
+                      pincel.y=evt.getY();
+                      pincel.width=10;
+                      pincel.height=10;
+                      bufferGraphics.fill(pincel);
+                      bufferGraphics.setColor(colorSeleccionado);
+                      bufferGraphics.draw(pincel);
+                      } break;
         }
 
         // Este evento nos permite inicializar la elipse que vamos a dibujar en el buffer. Tiene que estar en la posición x,y donde
@@ -566,7 +650,36 @@ public class VentanaPaint extends javax.swing.JFrame {
         /*El buffer coge el desarrollo de lo que estamos pintando y el buffer2 guarda el resultado final.*/
         //Graphics2D g2 = (Graphics2D) buffer2.getGraphics();
         //Estas lineas son las que hacen el dibujado.
-         miForma.dibujate(buffer2Graphics, evt.getY(), evt.getX());
+       if(formaSeleccionada == 100 || formaSeleccionada== 3 || formaSeleccionada == 4 || formaSeleccionada == 5 || formaSeleccionada == 24){
+        if(jCheckBox2.isSelected()){
+         miForma.dibujate(buffer2Graphics, evt.getY(), evt.getX(),new Trazo(jSlider1.getValue(), true)); //Hace punteado
+        }else{
+         miForma.dibujate(buffer2Graphics, evt.getY(), evt.getX(),new Trazo(jSlider1.getValue())); //Hace trazo normal
+        }
+        }
+        
+        if(formaSeleccionada==2){
+           linea.x2=evt.getX();
+           linea.y2=evt.getY();
+           new Trazo(jSlider1.getValue()); 
+           buffer2Graphics.setColor(colorSeleccionado);
+           buffer2Graphics.draw(linea);     
+        }
+        
+        if(formaSeleccionada==11){
+           pincel.x=evt.getX();
+           pincel.y=evt.getY();
+           pincel.width=10;
+           pincel.height=10;
+           buffer2Graphics.fill(pincel);
+           buffer2Graphics.setColor(colorSeleccionado);
+           buffer2Graphics.draw(pincel);
+        }
+       
+         
+         
+         
+        // miPincel.dibujaPincel(buffer2Graphics, evt.getX(), evt.getY());
          
          //Esta parte hace que se dibuje el panel de un color seleccionado.
          if(formaSeleccionada==10){
@@ -684,6 +797,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2MousePressed
 
     private void jToggleButton3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton3MousePressed
+        //Selecciona la linea.
         formaSeleccionada=2;
         deSelecciona();
     }//GEN-LAST:event_jToggleButton3MousePressed
@@ -705,6 +819,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel5MousePressed
 
     private void jToggleButton10MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton10MousePressed
+       //Selecciona el cubo
         formaSeleccionada=10;
         deSelecciona();
     }//GEN-LAST:event_jToggleButton10MousePressed
@@ -714,6 +829,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     }//GEN-LAST:event_jToggleButton10MouseReleased
 
     private void jToggleButton7MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton7MousePressed
+        //Selecciona el pincel
         formaSeleccionada=11;
         deSelecciona();
         
@@ -758,6 +874,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
@@ -772,6 +889,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JSlider jSlider1;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JToggleButton jToggleButton10;
     private javax.swing.JToggleButton jToggleButton11;

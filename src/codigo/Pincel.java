@@ -1,11 +1,60 @@
 /*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/*
+package codigo;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.geom.Ellipse2D;
+*/
+/**
+ *
+ * @author Thomas
+ */
+
+/*
+public class Pincel extends Ellipse2D.Double{
+    int x=0;
+    int y=0;
+    Color color=null;
+    
+    public Pincel(int _posX, int _posY, int _diametro, Color _color){
+          super();
+          this.x=_posX;
+          this.y=_posY;
+          width = _diametro;
+          height = _diametro;
+          color=_color;
+    }
+    
+    public void dibujaPincel(Graphics2D g2,int _posX,int _posY){
+        int diametro = 10;
+        width = diametro;
+        height = diametro;
+        
+        y=y-_posY;
+        x=x-_posX;
+        
+        
+        g2.setColor(color);
+        g2.fill(this);
+        g2.draw(this);
+    }
+}
+*/
+
+/*
  * Autor; Marta Márquez Olalla.
 
 Todas las partes comunes a los objetos que vamos a dibujar.
  */
 package codigo;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -14,7 +63,7 @@ import java.awt.Polygon;
  *
  * La clase Forma es la parte común de todas las formas regulares que dibuja el programa.
  */
-public class Forma extends Polygon{
+public class Pincel extends Polygon{
     
     Color color=null;
        public boolean relleno=false;
@@ -22,7 +71,7 @@ public class Forma extends Polygon{
        int x=0;
        int y=0;
        
-       public Forma(int _posX, int _posY, int _numLados, Color _color, boolean _relleno){
+       public Pincel(int _posX, int _posY, int _numLados, Color _color, boolean _relleno){
         super(new int[_numLados], new int[_numLados], _numLados);
        
        //Centro de la forma.
@@ -34,7 +83,7 @@ public class Forma extends Polygon{
     }
        
        
-        public void dibujate(Graphics2D g2, int _posY, int _posX, BasicStroke _trazo){  
+        public void dibujaPincel(Graphics2D g2, int _posY, int _posX){  
          //Redibujamos el pentágono (TODO).
         calculaVertices(y-_posY, x-_posX);
         
@@ -46,7 +95,6 @@ public class Forma extends Polygon{
         if(relleno){
             g2.fill(this);
         }else{
-            g2.setStroke(_trazo);
             g2.draw(this);
         }
     
@@ -63,3 +111,4 @@ public class Forma extends Polygon{
         }
     
 }
+
