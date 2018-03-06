@@ -407,6 +407,9 @@
           <Image iconType="3" name="/Imagenes/borrador.jpg"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jToggleButton8MousePressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JToggleButton" name="jToggleButton9">
       <Properties>
@@ -432,6 +435,9 @@
           <Image iconType="3" name="/Imagenes/colorchooser.jpg"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jToggleButton11MousePressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JToggleButton" name="jToggleButton12">
       <Properties>

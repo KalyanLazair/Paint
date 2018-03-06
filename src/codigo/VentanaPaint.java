@@ -22,6 +22,7 @@ import static java.awt.Color.RED;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Robot;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
@@ -52,6 +53,11 @@ public class VentanaPaint extends javax.swing.JFrame {
     double x=0;
     double y=0;
     
+    int x1=0;
+    int x2=0;
+    int y1=0;
+    int y2=0;
+    
     //Declaro la linea.
     
     Line2D.Double linea=new Line2D.Double();
@@ -59,6 +65,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     //Declaro el pincel
     
     Ellipse2D.Double pincel=new Ellipse2D.Double();
+    
     
     
     /*En esta variable vamos a guardar el color seleccionado.*/
@@ -83,6 +90,10 @@ public class VentanaPaint extends javax.swing.JFrame {
                                    10.0f, 
                                    new float[]{10.0f}, 
                                    0.0f);
+   
+   //Prueba.
+    Robot robot;
+   
     
     public VentanaPaint() {
         initComponents();
@@ -356,6 +367,11 @@ public class VentanaPaint extends javax.swing.JFrame {
         });
 
         jToggleButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/borrador.jpg"))); // NOI18N
+        jToggleButton8.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jToggleButton8MousePressed(evt);
+            }
+        });
 
         jToggleButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/spray.jpg"))); // NOI18N
 
@@ -370,6 +386,11 @@ public class VentanaPaint extends javax.swing.JFrame {
         });
 
         jToggleButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/colorchooser.jpg"))); // NOI18N
+        jToggleButton11.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jToggleButton11MousePressed(evt);
+            }
+        });
 
         jToggleButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cortar.jpg"))); // NOI18N
 
@@ -581,20 +602,33 @@ public class VentanaPaint extends javax.swing.JFrame {
         //Dibujamos la linea.
         if (formaSeleccionada == 2) {
             linea.x2 = evt.getX();
-            linea.y2 = evt.getY();
-            new Trazo(jSlider1.getValue());            
+            linea.y2 = evt.getY();          
             bufferGraphics.setColor(colorSeleccionado);
             bufferGraphics.draw(linea);
         }
         //Pincel.
         if(formaSeleccionada==11){ 
-           pincel.x=evt.getX();
-           pincel.y=evt.getY();
-           pincel.width=10;
-           pincel.height=10;
-           bufferGraphics.fill(pincel);
-           bufferGraphics.setColor(colorSeleccionado);
-           bufferGraphics.draw(pincel);    
+           x2=evt.getX();
+           y2=evt.getY();
+           buffer2Graphics.setColor(colorSeleccionado);
+           jSlider1.getValue();
+           if(x1 != x2 || y1 != y2){  
+             buffer2Graphics.drawLine(x1,y1,x2,y2);
+           }
+             x1=x2;
+             y1=y2;
+        }
+        //goma
+        if(formaSeleccionada==14){
+           x2=evt.getX();
+           y2=evt.getY();
+           buffer2Graphics.setColor(Color.WHITE);
+           jSlider1.getValue();
+           if(x1 != x2 || y1 != y2){  
+             buffer2Graphics.drawLine(x1,y1,x2,y2);
+           }
+             x1=x2;
+             y1=y2;
         }
         
         
@@ -623,17 +657,21 @@ public class VentanaPaint extends javax.swing.JFrame {
                    {linea.x1=evt.getX();
                      linea.y1=evt.getY();
                      linea.x2=evt.getX();
-                     linea.y2=evt.getY();}
+                     linea.y2=evt.getY();
+                     
+                   }
                break;
             case 10: buffer2Graphics.setColor(colorSeleccionado); break;
-            case 11: {pincel.x=evt.getX();
-                      pincel.y=evt.getY();
-                      pincel.width=10;
-                      pincel.height=10;
-                      bufferGraphics.fill(pincel);
-                      bufferGraphics.setColor(colorSeleccionado);
-                      bufferGraphics.draw(pincel);
+            case 11: {x1=evt.getX();
+                      y1=evt.getY();
                       } break;
+            case 12: { 
+                    colorSeleccionado = robot.getPixelColor(evt.getX(), evt.getY());
+            }; break;
+            case 14: {
+                      x1=evt.getX();
+                      x2=evt.getY();
+            }
         }
 
         // Este evento nos permite inicializar la elipse que vamos a dibujar en el buffer. Tiene que estar en la posición x,y donde
@@ -665,17 +703,15 @@ public class VentanaPaint extends javax.swing.JFrame {
            buffer2Graphics.setColor(colorSeleccionado);
            buffer2Graphics.draw(linea);     
         }
-        
+        //pincel
         if(formaSeleccionada==11){
-           pincel.x=evt.getX();
-           pincel.y=evt.getY();
-           pincel.width=10;
-           pincel.height=10;
-           buffer2Graphics.fill(pincel);
-           buffer2Graphics.setColor(colorSeleccionado);
-           buffer2Graphics.draw(pincel);
+           buffer2Graphics.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
         }
+       //goma
        
+       if(formaSeleccionada==14){
+           buffer2Graphics.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
+        }
          
          
          
@@ -834,6 +870,17 @@ public class VentanaPaint extends javax.swing.JFrame {
         deSelecciona();
         
     }//GEN-LAST:event_jToggleButton7MousePressed
+
+    private void jToggleButton11MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton11MousePressed
+        //colorSeleccionado= buffer2Graphics.getRGB(evt.getX(),evt.getY());
+        formaSeleccionada=12;
+        deSelecciona();
+    }//GEN-LAST:event_jToggleButton11MousePressed
+
+    private void jToggleButton8MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton8MousePressed
+        formaSeleccionada=14;
+        deSelecciona();
+    }//GEN-LAST:event_jToggleButton8MousePressed
 
     /**
      * @param args the command line arguments
