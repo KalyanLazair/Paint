@@ -22,12 +22,16 @@ import static java.awt.Color.RED;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Robot;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -57,6 +61,9 @@ public class VentanaPaint extends javax.swing.JFrame {
     int x2=0;
     int y1=0;
     int y2=0;
+    
+    
+    Random random=new Random();
     
     //Declaro la linea.
     
@@ -369,6 +376,11 @@ public class VentanaPaint extends javax.swing.JFrame {
         });
 
         jToggleButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/spray.jpg"))); // NOI18N
+        jToggleButton9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jToggleButton9MousePressed(evt);
+            }
+        });
 
         jToggleButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cubo.jpg"))); // NOI18N
         jToggleButton10.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -632,12 +644,23 @@ public class VentanaPaint extends javax.swing.JFrame {
              x1=x2;
              y1=y2;
         }
-        
-        
-     
- //      miPincel.dibujaPincel(bufferGraphics, evt.getX(),evt.getY());
-        
-
+        //Aerógrafo
+        if(formaSeleccionada==16){
+           x2=evt.getX();
+           y2=evt.getY();
+           
+           buffer2Graphics.setColor(colorSeleccionado);
+           
+          for(int i=0; i<30;i++){         
+              x1=evt.getX()+random.nextInt(30);             
+              y1=evt.getY()+random.nextInt(30);  
+             buffer2Graphics.drawLine(x1,y1,x1,y1);
+          }
+          
+            
+        }
+       
+ 
        
         //Dibujar requiere muchos recursos del ordenador. Se tiene que hacer lo mínimo imprescindible posible. Le estamos
         //diciendo a Java que hemos cambiado el tamaño del círculo y que tiene que actualizarlo en pantalla. El método repaint
@@ -655,19 +678,14 @@ public class VentanaPaint extends javax.swing.JFrame {
             case 3: miForma= new Triangulo(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
             case 5: miForma= new Pentagono(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
             case 24: miForma= new Estrella(evt.getX(), evt.getY(), colorSeleccionado, jCheckBox1.isSelected()); break;
-            case 2:   
+            case 2:  //linea 
                    {linea.x1=evt.getX();
                      linea.y1=evt.getY();
                      linea.x2=evt.getX();
                      linea.y2=evt.getY();
                      
                    }
-               break;//cubo
-            case 10: {
-                bufferGraphics.setColor(colorSeleccionado);
-                buffer2Graphics.setColor(colorSeleccionado);
-
-            }; break;
+               break;
             //pincel
             case 11: {x1=evt.getX();
                       y1=evt.getY();
@@ -677,8 +695,15 @@ public class VentanaPaint extends javax.swing.JFrame {
             }; break;
             case 14: {//goma
                       x1=evt.getX();
-                      x2=evt.getY();
-            }
+                      y1=evt.getY();
+            }; break;
+            //cubo
+            case 10:{floodFillFuncion(buffer2, evt.getX(), evt.getY(), colorSeleccionado);}; break;
+            //aerógrafo
+            case 16:{x1=evt.getX();
+                     y1=evt.getY();
+    
+                    }; break;
         }
 
         // Este evento nos permite inicializar la elipse que vamos a dibujar en el buffer. Tiene que estar en la posición x,y donde
@@ -693,7 +718,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     private void jPanel1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseReleased
         //apunto al buffer2. En el momento del release, lo que hayamos dibujado se pinta sobre el buffer2.
         /*El buffer coge el desarrollo de lo que estamos pintando y el buffer2 guarda el resultado final.*/
-        //Graphics2D g2 = (Graphics2D) buffer2.getGraphics();
+        
         //Estas lineas son las que hacen el dibujado.
        if(formaSeleccionada == 100 || formaSeleccionada== 3 || formaSeleccionada == 4 || formaSeleccionada == 5 || formaSeleccionada == 24){
         if(jCheckBox2.isSelected()){
@@ -721,18 +746,69 @@ public class VentanaPaint extends javax.swing.JFrame {
            buffer2Graphics.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
            buffer2Graphics.setStroke(new BasicStroke(jSlider1.getValue()));
         }
-         
-         
-         
-        // miPincel.dibujaPincel(buffer2Graphics, evt.getX(), evt.getY());
-         
+       
+       if(formaSeleccionada==16){
+          buffer2Graphics.drawLine(evt.getX(),evt.getY(), evt.getX(), evt.getY());
+       }
+      
          //Esta parte hace que se dibuje el panel de un color seleccionado.
-         if(formaSeleccionada==10){
+         /*if(formaSeleccionada==10){
            buffer2Graphics.setColor(colorSeleccionado);
            buffer2Graphics.fillRect(0,0, buffer.getWidth(),buffer.getHeight());
-         }
+         }*/
     }//GEN-LAST:event_jPanel1MouseReleased
 
+
+
+
+//flood fill.
+    public static void floodFillFuncion(BufferedImage _image, int _x, int _y, Color _color){
+         
+        int colorBase= _image.getRGB(_x, _y);
+        boolean[][] hits = new boolean[_image.getHeight()][_image.getWidth()];
+        Queue<Point> queue = new LinkedList<Point>();
+        queue.add(new Point(_x, _y));
+        
+        while (!queue.isEmpty()) 
+    {
+        Point p = queue.remove();
+
+        if(floodFillImageDo(_image,hits,p.x,p.y, colorBase, _color.getRGB()))
+        {     
+            queue.add(new Point(p.x,p.y - 1)); 
+            queue.add(new Point(p.x,p.y + 1)); 
+            queue.add(new Point(p.x - 1,p.y)); 
+            queue.add(new Point(p.x + 1,p.y)); 
+        }
+    }
+    
+    }
+    
+    private static boolean floodFillImageDo(BufferedImage _image, boolean[][] hits,int x, int y, int colorBase, int tgtColor) 
+{
+      if (y < 0) return false;
+      if (x < 0) return false;
+      if (y > _image.getHeight()-1) return false;
+      if (x > _image.getWidth()-1) return false;
+
+      if (hits[y][x]) return false;
+
+      if (_image.getRGB(x, y)!=colorBase)
+        return false;
+
+    // valid, paint it
+
+       _image.setRGB(x, y, tgtColor);
+       hits[y][x] = true;
+       return true;
+}
+    
+    
+    
+    
+    
+    
+    
     private void jLabel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MousePressed
         jDialog1.setVisible(true);
     }//GEN-LAST:event_jLabel1MousePressed
@@ -865,8 +941,8 @@ public class VentanaPaint extends javax.swing.JFrame {
 
     private void jToggleButton10MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton10MousePressed
        //Selecciona el cubo
-        formaSeleccionada=10;
-        deSelecciona();
+        //formaSeleccionada=10;
+        //deSelecciona();
     }//GEN-LAST:event_jToggleButton10MousePressed
 
     private void jToggleButton10MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton10MouseReleased
@@ -881,6 +957,7 @@ public class VentanaPaint extends javax.swing.JFrame {
     }//GEN-LAST:event_jToggleButton7MousePressed
 
     private void jToggleButton8MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton8MousePressed
+        //goma
         formaSeleccionada=14;
         deSelecciona();
     }//GEN-LAST:event_jToggleButton8MousePressed
@@ -896,8 +973,17 @@ public class VentanaPaint extends javax.swing.JFrame {
     }//GEN-LAST:event_jToggleButton11MouseClicked
 
     private void jToggleButton10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton10MouseClicked
-        // TODO add your handling code here:
+        //cubo
+        formaSeleccionada=10;
+        floodFillFuncion(buffer2, evt.getX(), evt.getY(), colorSeleccionado);
+        deSelecciona();
     }//GEN-LAST:event_jToggleButton10MouseClicked
+
+    private void jToggleButton9MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jToggleButton9MousePressed
+        //aerógrafo
+        formaSeleccionada=16;
+        deSelecciona();
+    }//GEN-LAST:event_jToggleButton9MousePressed
 
     /**
      * @param args the command line arguments
